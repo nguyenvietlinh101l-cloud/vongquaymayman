@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Vòng Quay May Mắn</title>
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#111;
+  color:white;
+  text-align:center;
+  margin-top:40px;
+}
+
+#wheel{
+  width:400px;
+  height:400px;
+  border-radius:50%;
+  border:10px solid white;
+  margin:auto;
+  position:relative;
+  overflow:hidden;
+  transition: transform 5s cubic-bezier(.17,.67,.83,.67);
+}
+
+.segment{
+  position:absolute;
+  width:50%;
+  height:50%;
+  transform-origin:100% 100%;
+}
+
+button{
+  margin-top:30px;
+  padding:15px 40px;
+  font-size:20px;
+  border:none;
+  border-radius:10px;
+  background:#ff4757;
+  color:white;
+  cursor:pointer;
+}
+
+#result{
+  margin-top:20px;
+  font-size:24px;
+}
+
+.pointer{
+  width:0;
+  height:0;
+  border-left:20px solid transparent;
+  border-right:20px solid transparent;
+  border-bottom:40px solid yellow;
+  margin:auto;
+}
+</style>
+</head>
+<body>
+
+<h1>🎯 Vòng Quay May Mắn</h1>
+
+<div class="pointer"></div>
+
+<canvas id="wheelCanvas" width="400" height="400"></canvas>
+
+<br>
+
+<button onclick="spin()">QUAY</button>
+
+<div id="result"></div>
+
+<script>
+
+const options = [
+"100",
+"200",
+"300",
+"400",
+"500",
+"Chúc bạn may mắn",
+"50",
+"1000"
+];
+
+const canvas = document.getElementById("wheelCanvas");
+const ctx = canvas.getContext("2d");
+const segments = options.length;
+const angle = 2 * Math.PI / segments;
+
+function drawWheel(){
+
+for(let i=0;i<segments;i++){
+
+ctx.beginPath();
+ctx.moveTo(200,200);
+ctx.arc(200,200,200,i*angle,(i+1)*angle);
+
+ctx.fillStyle = `hsl(${i*360/segments},70%,50%)`;
+ctx.fill();
+
+ctx.save();
+ctx.translate(200,200);
+ctx.rotate(i*angle + angle/2);
+ctx.fillStyle="white";
+ctx.font="16px Arial";
+ctx.fillText(options[i],80,10);
+ctx.restore();
+
+}
+}
+
+let rotation = 0;
+
+function spin(){
+
+const extra = Math.floor(Math.random()*360);
+rotation += 360*5 + extra;
+
+canvas.style.transform = `rotate(${rotation}deg)`;
+
+setTimeout(()=>{
+
+const actualDeg = rotation % 360;
+const index = Math.floor((360-actualDeg)/(360/segments)) % segments;
+
+const result = options[index];
+
+document.getElementById("result").innerText = "Kết quả: " + result;
+
+},5000);
+
+}
+
+drawWheel();
+
+</script>
+
+</body>
+</html>
